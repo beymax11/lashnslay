@@ -10,6 +10,7 @@ export interface Reservation {
   time: string;
   price: number;
   code: string;
+  status?: "pending" | "confirmed" | "completed" | "cancelled";
 }
 
 export interface User {
@@ -21,6 +22,7 @@ export interface User {
   tier: "Silver Essential" | "Gold Elite" | "Platinum Signature";
   reservations: Reservation[];
   password?: string;
+  role?: "admin" | "user";
 }
 
 interface AuthContextType {
@@ -35,6 +37,9 @@ interface AuthContextType {
   logout: () => void;
   addReservation: (reservation: Omit<Reservation, "id" | "code">) => Reservation;
   cancelReservation: (id: string) => void;
+  isAdmin: boolean;
+  getAllReservations: () => (Reservation & { userEmail: string; userName: string; userPhone: string })[];
+  updateReservationStatus: (userEmail: string, resId: string, updated: Partial<Reservation> | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -58,6 +63,18 @@ const DEFAULT_USER: User = {
     },
   ],
   password: "eleanor123",
+};
+
+const DEFAULT_ADMIN: User = {
+  name: "Salon Administrator",
+  email: "admin@lashnslay.com",
+  phone: "+1 555-999-0000",
+  memberCode: "ADMIN-001",
+  points: 9999,
+  tier: "Platinum Signature",
+  reservations: [],
+  password: "admin123",
+  role: "admin",
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -93,6 +110,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = (email: string, password: string): boolean => {
     const normalized = email.trim().toLowerCase();
     if (!normalized || !password) return false;
+
+    if (normalized === "admin@lashnslay.com") {
+      if (password !== "admin123") {
+        return false;
+      }
+      saveUser(DEFAULT_ADMIN);
+      return true;
+    }
 
     if (normalized === "eleanor@luxury.com") {
       if (password !== "eleanor123") {
@@ -182,6 +207,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       ...reservation,
       id: newId,
       code: randCode,
+      status: "pending",
     };
 
     if (user) {
@@ -250,6 +276,73 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const isAdmin = user?.role === "admin";
+
+  const getAllReservations = () => {
+    try {
+      const allUsersStr = localStorage.getItem("lashnslay_all_users");
+      const parsedUsers: Record<string, User> = allUsersStr ? JSON.parse(allUsersStr) : {};
+      
+      if (!parsedUsers["eleanor@luxury.com"]) {
+        parsedUsers["eleanor@luxury.com"] = DEFAULT_USER;
+      }
+
+      const list: (Reservation & { userEmail: string; userName: string; userPhone: string })[] = [];
+      Object.values(parsedUsers).forEach((usr) => {
+        if (usr.reservations && usr.role !== "admin") {
+          usr.reservations.forEach((res) => {
+            list.push({
+              ...res,
+              userEmail: usr.email,
+              userName: usr.name,
+              userPhone: usr.phone,
+            });
+          });
+        }
+      });
+      return list;
+    } catch (e) {
+      console.error("Error fetching all reservations", e);
+      return [];
+    }
+  };
+
+  const updateReservationStatus = (userEmail: string, resId: string, updated: Partial<Reservation> | null) => {
+    try {
+      const normalized = userEmail.trim().toLowerCase();
+      const allUsersStr = localStorage.getItem("lashnslay_all_users");
+      const parsedUsers: Record<string, User> = allUsersStr ? JSON.parse(allUsersStr) : {};
+
+      if (normalized === "eleanor@luxury.com" && !parsedUsers[normalized]) {
+        parsedUsers[normalized] = DEFAULT_USER;
+      }
+
+      const targetUser = parsedUsers[normalized];
+      if (!targetUser) return;
+
+      if (updated === null) {
+        targetUser.reservations = targetUser.reservations.filter((r) => r.id !== resId);
+      } else {
+        targetUser.reservations = targetUser.reservations.map((r) => {
+          if (r.id === resId) {
+            return { ...r, ...updated };
+          }
+          return r;
+        });
+      }
+
+      parsedUsers[normalized] = targetUser;
+      localStorage.setItem("lashnslay_all_users", JSON.stringify(parsedUsers));
+
+      if (user && user.email.toLowerCase() === normalized) {
+        setUser({ ...targetUser });
+        localStorage.setItem("lashnslay_user", JSON.stringify(targetUser));
+      }
+    } catch (e) {
+      console.error("Error updating user reservation", e);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -264,6 +357,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         logout,
         addReservation,
         cancelReservation,
+        isAdmin,
+        getAllReservations,
+        updateReservationStatus,
       }}
     >
       {children}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import LoyaltyCard from "@/components/loyalty-card";
+import LoyaltyCard from "@/components/loyalty/loyalty-card";
 import Link from "next/link";
 import { useAuth } from "@/context/auth-context";
 

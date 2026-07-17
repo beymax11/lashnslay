@@ -13,6 +13,10 @@ export default function Navbar() {
   const pathname = usePathname();
   const { isLoggedIn, user, openLoginModal, logout } = useAuth();
 
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 20) {

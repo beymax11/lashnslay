@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Montserrat } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
+import Navbar from "@/components/layout/navbar";
+import Footer from "@/components/layout/footer";
 import { AuthProvider } from "@/context/auth-context";
-import LoginModal from "@/components/login-modal";
+import LoginModal from "@/components/auth/login-modal";
 
 const serifFont = Cormorant_Garamond({
   variable: "--font-serif",
@@ -34,6 +34,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${serifFont.variable} ${sansFont.variable} h-full scroll-smooth antialiased`}
+      suppressHydrationWarning
     >
       <head>
         <script
