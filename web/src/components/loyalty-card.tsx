@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, MouseEvent } from "react";
+import { useAuth } from "@/context/auth-context";
 
 interface Reward {
   points: number;
@@ -11,15 +12,16 @@ interface Reward {
 }
 
 export default function LoyaltyCard() {
+  const { user } = useAuth();
   const [activeReward, setActiveReward] = useState<Reward | null>(null);
   const [rotateX, setRotateX] = useState(0);
   const [rotateY, setRotateY] = useState(0);
   const [sheenPosition, setSheenPosition] = useState({ x: 0, y: 0 });
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const currentPoints = 750;
-  const maxPoints = 1000;
-  const progressPercent = (currentPoints / maxPoints) * 100;
+  const currentPoints = user?.points ?? 0;
+  const maxPoints = user?.tier === "Silver Essential" ? 500 : user?.tier === "Gold Elite" ? 1500 : 2000;
+  const progressPercent = Math.min(100, (currentPoints / maxPoints) * 100);
 
   const rewards: Reward[] = [
     {
@@ -130,11 +132,11 @@ export default function LoyaltyCard() {
           <div className="flex justify-between items-end" style={{ transform: "translateZ(30px)" }}>
             <div>
               <p className="text-[9px] uppercase tracking-[0.25em] font-light text-neutral-500">MEMBER NAME</p>
-              <p className="text-xs uppercase tracking-[0.15em] font-medium mt-0.5">ELEANOR VANE</p>
+              <p className="text-xs uppercase tracking-[0.15em] font-medium mt-0.5">{user?.name ?? "GUEST MEMBER"}</p>
             </div>
             <div className="text-right">
               <p className="text-[9px] uppercase tracking-[0.25em] font-light text-neutral-500">CARD NO</p>
-              <p className="text-xs tracking-widest font-mono text-neutral-300 mt-0.5">•••• 8009 5112</p>
+              <p className="text-xs tracking-widest font-mono text-neutral-300 mt-0.5">{user?.memberCode ?? "•••• 0000 0000"}</p>
             </div>
           </div>
         </div>
@@ -143,8 +145,12 @@ export default function LoyaltyCard() {
       {/* Point Progress Bar */}
       <div className="w-full mb-8">
         <div className="flex justify-between text-[11px] uppercase tracking-[0.15em] font-light text-luxury-black/70 mb-2">
-          <span>Tier Progress: Gold Elite</span>
-          <span>{maxPoints - currentPoints} pts to next reward</span>
+          <span>Tier Progress: {user?.tier ?? "Silver Essential"}</span>
+          <span>
+            {currentPoints >= maxPoints 
+              ? "Max Tier Achieved" 
+              : `${maxPoints - currentPoints} pts to next milestone`}
+          </span>
         </div>
         <div className="w-full h-[3px] bg-luxury-light-gray rounded-full overflow-hidden">
           <div
@@ -193,7 +199,7 @@ export default function LoyaltyCard() {
 
       {/* Reward Coupon Detail Pane */}
       {activeReward && (
-        <div className="w-full mt-6 border border-luxury-black p-6 animate-fade-in-up bg-luxury-soft-white flex flex-col items-center text-center">
+        <div className="w-full mt-6 border border-luxury-black p-6 bg-luxury-soft-white flex flex-col items-center text-center">
           <span className="text-[9px] tracking-[0.25em] text-neutral-400 uppercase font-light">
             Voucher Code
           </span>

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import Link from "next/link";
+import { useAuth } from "@/context/auth-context";
 
 interface Service {
   id: string;
@@ -18,6 +19,7 @@ interface Stylist {
 }
 
 export default function ReservePage() {
+  const { isLoggedIn, user, addReservation, openLoginModal } = useAuth();
   const [step, setStep] = useState(1);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedStylist, setSelectedStylist] = useState<Stylist | null>(null);
@@ -33,6 +35,26 @@ export default function ReservePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
   const [reservationCode, setReservationCode] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      setClientInfo({
+        name: user.name,
+        email: user.email,
+        phone: user.phone || "",
+        memberCode: user.memberCode ? user.memberCode.replace("•••• ", "") : "",
+        notes: "",
+      });
+    } else {
+      setClientInfo({
+        name: "",
+        email: "",
+        phone: "",
+        memberCode: "",
+        notes: "",
+      });
+    }
+  }, [user]);
 
   const services: Service[] = [
     {
@@ -146,8 +168,19 @@ export default function ReservePage() {
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
-      setReservationCode(`RES-${(Math.random() * 100000).toFixed(0)}-2026`);
+      const randCode = `RES-${(Math.random() * 100000).toFixed(0)}-2026`;
+      setReservationCode(randCode);
       setBookingConfirmed(true);
+
+      if (isLoggedIn && selectedService && selectedStylist) {
+        addReservation({
+          serviceName: selectedService.name,
+          stylistName: selectedStylist.name,
+          date: selectedDate,
+          time: selectedTime,
+          price: finalPrice,
+        });
+      }
     }, 1500);
   };
 
@@ -244,6 +277,16 @@ export default function ReservePage() {
               <p className="text-sm font-mono tracking-widest text-neutral-400 uppercase mb-6">
                 Reservation Code: {reservationCode}
               </p>
+
+              {(() => {
+                const earnRate = user?.tier === "Gold Elite" ? 12 : user?.tier === "Platinum Signature" ? 15 : 10;
+                const pointsEarned = selectedService ? Math.floor(finalPrice / 10) * earnRate : 0;
+                return isLoggedIn && pointsEarned > 0 ? (
+                  <div className="bg-luxury-black text-luxury-white px-4 py-2 border border-luxury-black text-[9px] uppercase tracking-[0.25em] font-medium mb-6 animate-pulse">
+                    +{pointsEarned} Couture Points Accumulated
+                  </div>
+                ) : null;
+              })()}
 
               <div className="w-full max-w-md border border-neutral-100 bg-luxury-soft-white p-6 text-left text-xs space-y-3 mb-8">
                 <div className="flex justify-between">
@@ -475,6 +518,36 @@ export default function ReservePage() {
 
               {step === 3 && (
                 <div className="space-y-4 animate-fade-in-up">
+                  {!isLoggedIn ? (
+                    <div className="border border-luxury-black p-4 bg-luxury-soft-white flex flex-col sm:flex-row items-center justify-between gap-4">
+                      <div>
+                        <p className="text-[10px] font-semibold uppercase tracking-wider text-luxury-black">
+                          Book faster & earn loyalty rewards
+                        </p>
+                        <p className="text-[9px] text-neutral-500 font-light mt-0.5 uppercase tracking-wide leading-relaxed">
+                          Sign in to accumulate membership points on this booking.
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={openLoginModal}
+                        className="text-[9px] uppercase tracking-widest bg-luxury-black text-luxury-white py-2 px-4 border border-luxury-black hover:bg-transparent hover:text-luxury-black transition-all cursor-pointer font-semibold"
+                      >
+                        Sign In
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="bg-neutral-50 p-4 border border-luxury-light-gray flex items-center justify-between">
+                      <div>
+                        <p className="text-[9px] uppercase tracking-wider text-neutral-400 font-medium">Logged In Member</p>
+                        <p className="text-[11px] uppercase tracking-wide font-medium text-luxury-black mt-0.5">
+                          {user?.name} ({user?.tier})
+                        </p>
+                      </div>
+                      <span className="text-[9px] font-mono text-neutral-500 uppercase tracking-widest">{user?.memberCode}</span>
+                    </div>
+                  )}
+
                   <p className="text-xs uppercase tracking-widest text-neutral-400 font-light mb-2">
                     Enter Personal Credentials:
                   </p>

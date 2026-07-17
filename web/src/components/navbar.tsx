@@ -3,12 +3,15 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/context/auth-context";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const pathname = usePathname();
+  const { isLoggedIn, user, openLoginModal, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,11 +61,11 @@ export default function Navbar() {
             : "bg-transparent py-6 border-b border-transparent"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+        <div className="w-full px-6 md:px-12 lg:px-16 flex items-center justify-between">
           {/* Logo */}
           <Link
             href="/"
-            className="font-serif text-xl md:text-2xl tracking-[0.25em] font-light hover:opacity-75 transition-opacity"
+            className="font-serif text-2xl md:text-3xl tracking-[0.25em] font-bold hover:opacity-75 transition-opacity"
           >
             LASH & SLAY
           </Link>
@@ -92,6 +95,8 @@ export default function Navbar() {
 
           {/* CTA & Mobile Toggle */}
           <div className="flex items-center gap-6">
+
+            {/* Reserve Appointment */}
             <Link
               href="/reserve"
               className="hidden sm:inline-block text-xs uppercase tracking-[0.2em] px-6 py-3 border border-luxury-black bg-luxury-black text-luxury-white hover:bg-transparent hover:text-luxury-black transition-all duration-300 font-medium"
@@ -99,46 +104,74 @@ export default function Navbar() {
               Reserve Appointment
             </Link>
 
-            {/* Theme Toggle Button */}
-            <button
-              onClick={toggleTheme}
-              className="p-2.5 rounded-full hover:bg-luxury-light-gray text-luxury-black transition-colors focus:outline-none cursor-pointer flex items-center justify-center"
-              aria-label="Toggle Theme"
-            >
-              {theme === "light" ? (
-                // Moon Icon for Dark Mode
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="w-4.5 h-4.5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
-                  />
-                </svg>
+            {/* Desktop Auth State (Sign In / Profile dropdown at the very end of desktop) */}
+            <div className="hidden md:block">
+              {isLoggedIn ? (
+                <div className="relative">
+                  <button
+                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                    className="text-[10px] uppercase tracking-[0.2em] font-medium text-luxury-black hover:opacity-75 transition-opacity flex items-center gap-1.5 cursor-pointer py-2 focus:outline-none"
+                  >
+                    <span>{user?.name.split(" ")[0]}</span>
+                    <svg 
+                      className={`w-2.5 h-2.5 transition-transform duration-300 ${isProfileOpen ? "rotate-180" : ""}`} 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {isProfileOpen && (
+                    <>
+                      <div className="fixed inset-0 z-10" onClick={() => setIsProfileOpen(false)} />
+                      <div className="absolute right-0 mt-3 w-56 bg-luxury-white border border-luxury-light-gray shadow-xl py-4 z-20">
+                        <div className="px-5 py-2.5 border-b border-luxury-light-gray">
+                          <p className="text-[9px] text-neutral-400 uppercase tracking-widest font-semibold">{user?.tier}</p>
+                          <p className="text-xs text-luxury-black font-semibold uppercase tracking-wider truncate mt-0.5">{user?.name}</p>
+                          <p className="text-[9px] text-neutral-500 font-mono tracking-wider mt-0.5">{user?.points} PTS</p>
+                        </div>
+                        <div className="py-2">
+                          <Link
+                            href="/loyalty"
+                            onClick={() => setIsProfileOpen(false)}
+                            className="block px-5 py-2 text-[10px] uppercase tracking-widest text-luxury-black/70 hover:text-luxury-black hover:bg-luxury-soft-white transition-colors"
+                          >
+                            Loyalty Portal
+                          </Link>
+                          {/* Theme Toggle Button inside Profile Dropdown */}
+                          <button
+                            onClick={toggleTheme}
+                            className="w-full text-left px-5 py-2 text-[10px] uppercase tracking-widest text-luxury-black/70 hover:text-luxury-black hover:bg-luxury-soft-white transition-colors cursor-pointer flex items-center justify-between"
+                          >
+                            <span>Theme: {theme === "light" ? "Dark Mode" : "Light Mode"}</span>
+                            <span className="text-xs">
+                              {theme === "light" ? "🌙" : "☀️"}
+                            </span>
+                          </button>
+                          <button
+                            onClick={() => {
+                              setIsProfileOpen(false);
+                              logout();
+                            }}
+                            className="w-full text-left px-5 py-2 text-[10px] uppercase tracking-widest text-red-600 dark:text-red-400 hover:bg-luxury-soft-white transition-colors cursor-pointer border-t border-luxury-light-gray/60 mt-1 pt-3"
+                          >
+                            Log Out
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
               ) : (
-                // Sun Icon for Light Mode
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="w-4.5 h-4.5"
+                <button
+                  onClick={openLoginModal}
+                  className="text-xs uppercase tracking-[0.2em] font-light text-luxury-black/70 hover:text-luxury-black py-2 cursor-pointer transition-colors focus:outline-none"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12ZM21 12h-1.5M3 12h1.5m9-9v1.5m0 16.5V19.5M19.07 19.07l-1.06-1.06M6.36 6.36l-1.06-1.06m12.73-12.73-1.06 1.06M6.36 17.64l-1.06 1.06"
-                  />
-                </svg>
+                  Sign In
+                </button>
               )}
-            </button>
+            </div>
 
             {/* Mobile Menu Icon */}
             <button
@@ -192,6 +225,45 @@ export default function Navbar() {
           >
             Reserve Appointment
           </Link>
+
+          <div className="w-12 h-[1px] bg-luxury-black/10 my-2" />
+
+          {isLoggedIn ? (
+            <div className="flex flex-col items-center gap-3">
+              <span className="text-[9px] text-neutral-400 uppercase tracking-widest font-semibold">{user?.tier}</span>
+              <span className="font-serif text-xl tracking-[0.1em] text-luxury-black uppercase font-light">{user?.name}</span>
+              <span className="text-[10px] text-neutral-500 tracking-wider font-mono -mt-1">{user?.points} PTS</span>
+              
+              {/* Theme Toggle option inside mobile menu */}
+              <button
+                onClick={toggleTheme}
+                className="text-[10px] uppercase tracking-[0.2em] text-luxury-black/75 hover:text-luxury-black cursor-pointer mt-2 flex items-center gap-1.5 focus:outline-none"
+              >
+                <span>Theme: {theme === "light" ? "Dark Mode" : "Light Mode"}</span>
+                <span>{theme === "light" ? "🌙" : "☀️"}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  logout();
+                }}
+                className="text-[10px] uppercase tracking-[0.2em] font-semibold text-red-600 dark:text-red-400 cursor-pointer mt-3 pt-2 border-t border-luxury-black/5 w-24 text-center"
+              >
+                Log Out
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                openLoginModal();
+              }}
+              className="text-xs uppercase tracking-[0.2em] font-medium text-luxury-black hover:opacity-60 cursor-pointer"
+            >
+              Sign In
+            </button>
+          )}
         </nav>
       </div>
     </>

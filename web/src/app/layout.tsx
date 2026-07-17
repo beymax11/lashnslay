@@ -3,6 +3,8 @@ import { Cormorant_Garamond, Montserrat } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
+import { AuthProvider } from "@/context/auth-context";
+import LoginModal from "@/components/login-modal";
 
 const serifFont = Cormorant_Garamond({
   variable: "--font-serif",
@@ -49,9 +51,12 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-luxury-white text-luxury-black selection:bg-luxury-black selection:text-luxury-white transition-colors duration-300">
-        <Navbar />
-        <main className="flex-1 flex flex-col w-full">{children}</main>
-        <Footer />
+        <AuthProvider>
+          <Navbar />
+          <main className="flex-1 flex flex-col w-full">{children}</main>
+          <Footer />
+          <LoginModal />
+        </AuthProvider>
       </body>
     </html>
   );
