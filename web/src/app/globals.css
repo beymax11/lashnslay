@@ -1,0 +1,169 @@
+@import "tailwindcss";
+
+@theme {
+  /* Fonts */
+  --font-serif: var(--font-serif), Cormorant Garamond, Georgia, serif;
+  --font-sans: var(--font-sans), Montserrat, system-ui, -apple-system, sans-serif;
+
+  /* Color Palette mapped to CSS variables */
+  --color-luxury-black: var(--luxury-black);
+  --color-luxury-white: var(--luxury-white);
+  --color-luxury-soft-white: var(--luxury-soft-white);
+  --color-luxury-light-gray: var(--luxury-light-gray);
+  --color-luxury-soft-gray: var(--luxury-soft-gray);
+  --color-charcoal: var(--charcoal);
+
+  /* Custom Animations */
+  --animate-fade-in: fade-in 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-fade-in-up: fade-in-up 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-draw-line: draw-line 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-card-shimmer: card-shimmer 2.5s ease-in-out infinite;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes draw-line {
+    from {
+      width: 0%;
+    }
+    to {
+      width: 100%;
+    }
+  }
+
+  @keyframes card-shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+}
+
+/* Class-based dark mode variant for Tailwind v4 */
+@variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+  
+  --luxury-black: #000000;
+  --luxury-white: #ffffff;
+  --luxury-soft-white: #f8f8f8;
+  --luxury-light-gray: #f2f2f2;
+  --luxury-soft-gray: #d9d9d9;
+  --charcoal: #2b2b2b;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ffffff;
+  
+  --luxury-black: #ffffff;
+  --luxury-white: #0a0a0a;
+  --luxury-soft-white: #121212;
+  --luxury-light-gray: #1e1e1e;
+  --luxury-soft-gray: #2d2d2d;
+  --charcoal: #e5e5e5;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-feature-settings: "lnum" 1, "kern" 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar to maintain minimalist styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--luxury-white);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--charcoal);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--luxury-black);
+}
+
+/* Premium micro-interactions and transitions */
+.luxury-btn-outline {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.luxury-btn-outline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000000;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: -1;
+}
+
+.luxury-btn-outline:hover {
+  color: #ffffff;
+}
+
+.luxury-btn-outline:hover::before {
+  transform: translateY(0);
+}
+
+/* Glassmorphic elements */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dark-glass-panel {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Shimmer styling for loyalty card */
+.loyalty-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+}
