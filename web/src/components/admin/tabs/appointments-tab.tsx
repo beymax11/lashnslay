@@ -3,12 +3,12 @@
 import React, { useState } from "react";
 import { Reservation } from "@/context/auth-context";
 import { ReservationWithClient } from "../admin-dashboard";
-
 interface AppointmentsTabProps {
   appointments: ReservationWithClient[];
   onUpdateStatus: (userEmail: string, resId: string, status: Reservation["status"]) => void;
   onStartReschedule: (appt: ReservationWithClient) => void;
   onCancelBooking: (userEmail: string, resId: string) => void;
+  onSelectAppointment: (appt: ReservationWithClient) => void;
 }
 
 export default function AppointmentsTab({
@@ -16,6 +16,7 @@ export default function AppointmentsTab({
   onUpdateStatus,
   onStartReschedule,
   onCancelBooking,
+  onSelectAppointment,
 }: AppointmentsTabProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -105,8 +106,12 @@ export default function AppointmentsTab({
                       <td className="py-5 px-6 font-mono text-[9px] text-neutral-400 dark:text-neutral-500 uppercase">
                         {appt.code}
                       </td>
-                      <td className="py-5 px-6">
-                        <div className="font-semibold text-luxury-black dark:text-white uppercase tracking-wider">
+                      <td 
+                        onClick={() => onSelectAppointment(appt)}
+                        className="py-5 px-6 cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800/30 transition-colors group/client"
+                        title="Click to view full details"
+                      >
+                        <div className="font-semibold text-luxury-black dark:text-white uppercase tracking-wider group-hover/client:underline decoration-1 decoration-neutral-400 dark:decoration-neutral-600">
                           {appt.userName}
                         </div>
                         <div className="text-[10px] text-neutral-400 dark:text-neutral-550 mt-1">
@@ -142,37 +147,61 @@ export default function AppointmentsTab({
                         </span>
                       </td>
                       <td className="py-5 px-6">
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+                        <div className="flex items-center justify-center gap-2">
                           {status === "pending" && (
                             <button
                               onClick={() => onUpdateStatus(appt.userEmail, appt.id, "confirmed")}
-                              className="w-full sm:w-auto px-3 py-1.5 bg-luxury-black dark:bg-white dark:text-neutral-900 text-luxury-white border border-luxury-black dark:border-white hover:bg-transparent dark:hover:bg-transparent hover:text-luxury-black dark:hover:text-white text-[9px] uppercase tracking-[0.2em] font-semibold transition-all duration-400 cursor-pointer focus:outline-none"
+                              aria-label="Confirm Appointment"
+                              className="relative group p-2 bg-luxury-black dark:bg-white dark:text-neutral-900 text-luxury-white border border-luxury-black dark:border-white hover:bg-transparent dark:hover:bg-transparent hover:text-luxury-black dark:hover:text-white transition-all duration-300 cursor-pointer focus:outline-none flex items-center justify-center"
                             >
-                              Confirm
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                              </svg>
+                              <span className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2.5 py-1 bg-luxury-black dark:bg-neutral-800 text-luxury-white dark:text-neutral-200 text-[8px] uppercase tracking-[0.15em] font-medium opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 whitespace-nowrap z-50 shadow-md border border-neutral-800 dark:border-neutral-700">
+                                Confirm
+                              </span>
                             </button>
                           )}
                           {status === "confirmed" && (
                             <button
                               onClick={() => onUpdateStatus(appt.userEmail, appt.id, "completed")}
-                              className="w-full sm:w-auto px-3 py-1.5 bg-luxury-black dark:bg-white dark:text-neutral-900 text-luxury-white border border-luxury-black dark:border-white hover:bg-transparent dark:hover:bg-transparent hover:text-luxury-black dark:hover:text-white text-[9px] uppercase tracking-[0.2em] font-semibold transition-all duration-400 cursor-pointer focus:outline-none"
+                              aria-label="Complete Appointment"
+                              className="relative group p-2 bg-luxury-black dark:bg-white dark:text-neutral-900 text-luxury-white border border-luxury-black dark:border-white hover:bg-transparent dark:hover:bg-transparent hover:text-luxury-black dark:hover:text-white transition-all duration-300 cursor-pointer focus:outline-none flex items-center justify-center"
                             >
-                              Complete
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                              </svg>
+                              <span className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2.5 py-1 bg-luxury-black dark:bg-neutral-800 text-luxury-white dark:text-neutral-200 text-[8px] uppercase tracking-[0.15em] font-medium opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 whitespace-nowrap z-50 shadow-md border border-neutral-800 dark:border-neutral-700">
+                                Complete
+                              </span>
                             </button>
                           )}
                           {status !== "cancelled" && status !== "completed" && (
                             <button
                               onClick={() => onStartReschedule(appt)}
-                              className="w-full sm:w-auto px-3 py-1.5 border border-luxury-light-gray dark:border-neutral-700 text-neutral-400 dark:text-neutral-500 hover:text-luxury-black dark:hover:text-white hover:border-luxury-black dark:hover:border-white text-[9px] uppercase tracking-[0.2em] font-medium transition-all duration-400 cursor-pointer focus:outline-none"
+                              aria-label="Reschedule Appointment"
+                              className="relative group p-2 border border-luxury-light-gray dark:border-neutral-700 text-neutral-400 dark:text-neutral-500 hover:text-luxury-black dark:hover:text-white hover:border-luxury-black dark:hover:border-white transition-all duration-300 cursor-pointer focus:outline-none flex items-center justify-center"
                             >
-                              Reschedule
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                              </svg>
+                              <span className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2.5 py-1 bg-luxury-black dark:bg-neutral-800 text-luxury-white dark:text-neutral-200 text-[8px] uppercase tracking-[0.15em] font-medium opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 whitespace-nowrap z-50 shadow-md border border-neutral-800 dark:border-neutral-700">
+                                Reschedule
+                              </span>
                             </button>
                           )}
                           {status !== "cancelled" && (
                             <button
                               onClick={() => onCancelBooking(appt.userEmail, appt.id)}
-                              className="w-full sm:w-auto px-3 py-1.5 border border-neutral-200 dark:border-neutral-800 text-neutral-300 dark:text-neutral-500 hover:text-red-650 hover:border-red-650 hover:text-red-600 hover:border-red-600 text-[9px] uppercase tracking-[0.2em] font-medium transition-all duration-400 cursor-pointer focus:outline-none"
+                              aria-label="Cancel Appointment"
+                              className="relative group p-2 border border-neutral-200 dark:border-neutral-800 text-neutral-300 dark:text-neutral-500 hover:text-red-650 hover:border-red-650 hover:text-red-600 hover:border-red-600 transition-all duration-300 cursor-pointer focus:outline-none flex items-center justify-center"
                             >
-                              Cancel
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                              </svg>
+                              <span className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2.5 py-1 bg-luxury-black dark:bg-neutral-800 text-red-500 dark:text-red-400 text-[8px] uppercase tracking-[0.15em] font-semibold opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 whitespace-nowrap z-50 shadow-md border border-neutral-800 dark:border-neutral-700">
+                                Cancel
+                              </span>
                             </button>
                           )}
                         </div>
