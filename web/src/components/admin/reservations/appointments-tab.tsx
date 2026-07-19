@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState } from "react";
 import { Reservation } from "@/context/auth-context";
@@ -134,7 +134,7 @@ export default function AppointmentsTab({
                         </div>
                       </td>
                       <td className="py-5 px-6 text-right font-mono font-semibold text-luxury-black dark:text-white">
-                        ${appt.price}
+                        ₱{appt.price}
                       </td>
                       <td className="py-5 px-6">
                         <span className={`inline-block px-2.5 py-1 text-[8px] uppercase tracking-[0.2em] font-semibold border ${

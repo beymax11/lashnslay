@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React from "react";
 import { ReservationWithClient } from "@/components/admin/dashboard/admin-dashboard";
@@ -58,7 +58,7 @@ export default function BookingDetailsModal({
             <div className="text-xs space-y-2 mt-2">
               <div className="flex justify-between"><span className="text-neutral-400">Service:</span> <span className="font-semibold uppercase text-luxury-black dark:text-white">{appt.serviceName}</span></div>
               <div className="flex justify-between"><span className="text-neutral-400">Stylist:</span> <span className="text-luxury-black dark:text-white font-light">{appt.stylistName}</span></div>
-              <div className="flex justify-between"><span className="text-neutral-400">Price:</span> <span className="font-semibold font-mono text-luxury-black dark:text-white">${appt.price}</span></div>
+              <div className="flex justify-between"><span className="text-neutral-400">Price:</span> <span className="font-semibold font-mono text-luxury-black dark:text-white">₱{appt.price}</span></div>
             </div>
           </div>
 

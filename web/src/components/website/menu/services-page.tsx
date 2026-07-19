@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -6,28 +6,25 @@ import Link from "next/link";
 export default function ServicesPage() {
   const collectionList = [
     {
-      title: "Classic Silk Eyelash Set",
-      price: "$150",
-      duration: "90 MINS",
-      desc: "Natural, single-lash application using lightweight premium silk fibres for subtle definition. Fits client looking for clean enhancement.",
+      title: "Package 1",
+      price: "₱499",
+      desc: "An essential beauty combo featuring our signature eyelash lift/perm and professional brow lamination for a clean, naturally defined look.",
       img: "/lash_classic.png",
-      details: ["Single extension per lash", "Organic rosewater cleanse", "Custom curl mapping"],
+      details: ["Eyelash Lift / Perm", "Brow Lamination", "Keratin-infused conditioning"],
     },
     {
-      title: "Cashmere Volume Custom Set",
-      price: "$220",
-      duration: "120 MINS",
-      desc: "Dense, multi-dimensional cashmere fans styled for elegant, premium, weightless volume. Ideal for editorial depth and dramatic symmetry.",
+      title: "Package 2",
+      price: "₱799",
+      desc: "Elevate your look with premium eyelash extensions and expert brow lamination, custom styled to emphasize your eyes with elegance and symmetry.",
       img: "/hero_eyelash.png",
-      details: ["2D-6D featherlight fans", "Botanical primer prep", "Lash-health scan validation"],
+      details: ["Premium Eyelash Extensions", "Brow Lamination", "Custom symmetry mapping"],
     },
     {
-      title: "Couture Lash Lift & Keratin",
-      price: "$110",
-      duration: "60 MINS",
-      desc: "Custom premium lash lift with organic keratin coating to nurture and curl natural lashes. Low-maintenance styling lasting 6 to 8 weeks.",
+      title: "Package 3 (2 Heads)",
+      price: "₱1299",
+      desc: "Double the beauty. A full session of professional eyelash extensions and brow lamination styled for two persons (2 Heads) at an exclusive rate.",
       img: "/lash_lounge.png",
-      details: ["Keratin-infusion coating", "Symmetry alignment curl", "Conditioning lash serum scan"],
+      details: ["Eyelash Extensions for 2 Heads", "Brow Lamination for 2 Heads", "Double-precision master application"],
     },
   ];
 
@@ -74,9 +71,6 @@ export default function ServicesPage() {
 
                 {/* Content Section */}
                 <div className="lg:col-span-6 space-y-6 flex flex-col justify-center px-4">
-                  <span className="text-[10px] tracking-widest font-mono text-neutral-400">
-                    COLLECTION EDITION 0{index + 1}
-                  </span>
                   <h2 className="font-serif text-2xl md:text-3xl tracking-wide font-light uppercase">
                     {service.title}
                   </h2>
@@ -99,8 +93,8 @@ export default function ServicesPage() {
                   </div>
 
                   <div className="pt-6 border-t border-luxury-light-gray flex items-center justify-between">
-                    <span className="font-mono text-xs text-neutral-500">
-                      {service.duration} / {service.price}
+                    <span className="font-mono text-xl font-bold text-luxury-black">
+                      {service.price}
                     </span>
                     <Link
                       href="/reservation"

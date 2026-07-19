@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React from "react";
 import { ReservationWithClient } from "@/components/admin/dashboard/admin-dashboard";
@@ -52,7 +52,7 @@ export default function AnalyticsTab({ appointments, metrics }: AnalyticsTabProp
             Projected Revenue
           </h4>
           <p className="font-serif text-4xl xl:text-5xl font-light tracking-wide mt-4 text-luxury-black dark:text-white">
-            ${metrics.revenue}
+            ₱{metrics.revenue}
           </p>
           <div className="text-[8px] tracking-[0.2em] text-neutral-400 dark:text-neutral-550 uppercase mt-3 font-light">
             Confirmed & Completed
@@ -102,31 +102,24 @@ export default function AnalyticsTab({ appointments, metrics }: AnalyticsTabProp
           <div className="space-y-5">
             {[
               {
-                name: "Cashmere Volume Custom Set",
+                name: "Package 1",
                 share: "45%",
                 count: appointments.filter((a) =>
-                  a.serviceName.includes("Cashmere Volume")
+                  a.serviceName.includes("Package 1")
                 ).length,
               },
               {
-                name: "Classic Silk Custom Set",
-                share: "25%",
+                name: "Package 2",
+                share: "35%",
                 count: appointments.filter((a) =>
-                  a.serviceName.includes("Classic Silk")
+                  a.serviceName.includes("Package 2")
                 ).length,
               },
               {
-                name: "Couture Hybrid Set",
+                name: "Package 3 (2 Heads)",
                 share: "20%",
                 count: appointments.filter((a) =>
-                  a.serviceName.includes("Couture Hybrid")
-                ).length,
-              },
-              {
-                name: "Lash Lift & Tint",
-                share: "10%",
-                count: appointments.filter((a) =>
-                  a.serviceName.includes("Lash Lift")
+                  a.serviceName.includes("Package 3")
                 ).length,
               },
             ].map((srv, idx) => (

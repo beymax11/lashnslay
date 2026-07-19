@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState } from "react";
 import { ReservationWithClient } from "@/components/admin/dashboard/admin-dashboard";
@@ -42,7 +42,7 @@ export default function RescheduleModal({
               {appt.userName}
             </span>
             <span className="block text-[10px] text-neutral-400 dark:text-neutral-500 mt-1 uppercase tracking-wider">
-              {appt.serviceName} (${appt.price})
+              {appt.serviceName} (₱{appt.price})
             </span>
           </div>
 

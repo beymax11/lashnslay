@@ -61,7 +61,7 @@ export default function ClientsTab({ clientDirectory }: ClientsTabProps) {
                       {client.totalBookings}
                     </td>
                     <td className="py-5 px-6 text-right font-mono font-semibold text-luxury-black dark:text-white">
-                      ${client.totalSpent}
+                      ₱{client.totalSpent}
                     </td>
                   </tr>
                 ))}

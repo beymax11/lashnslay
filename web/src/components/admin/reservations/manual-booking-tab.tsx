@@ -10,8 +10,8 @@ export default function ManualBookingTab({ onBookingCreated }: ManualBookingTabP
   const [newClientName, setNewClientName] = useState("");
   const [newClientEmail, setNewClientEmail] = useState("");
   const [newClientPhone, setNewClientPhone] = useState("");
-  const [newService, setNewService] = useState("Cashmere Volume Custom Set");
-  const [newPrice, setNewPrice] = useState(220);
+  const [newService, setNewService] = useState("Package 1");
+  const [newPrice, setNewPrice] = useState(499);
   const [blockoutDate, setBlockoutDate] = useState("");
   const [blockoutTime, setBlockoutTime] = useState("");
   const [blockoutStylist, setBlockoutStylist] = useState("Isabella Thorne");
@@ -19,10 +19,9 @@ export default function ManualBookingTab({ onBookingCreated }: ManualBookingTabP
 
   // Adjust price based on service
   useEffect(() => {
-    if (newService.includes("Cashmere Volume")) setNewPrice(220);
-    else if (newService.includes("Classic Silk")) setNewPrice(160);
-    else if (newService.includes("Couture Hybrid")) setNewPrice(190);
-    else if (newService.includes("Lash Lift")) setNewPrice(110);
+    if (newService.includes("Package 1")) setNewPrice(499);
+    else if (newService.includes("Package 2")) setNewPrice(799);
+    else if (newService.includes("Package 3")) setNewPrice(1299);
   }, [newService]);
 
   const handleCreateBooking = (e: React.FormEvent) => {
@@ -165,14 +164,15 @@ export default function ManualBookingTab({ onBookingCreated }: ManualBookingTabP
               onChange={(e) => setNewService(e.target.value)}
               className="w-full px-4 py-3 bg-luxury-soft-white dark:bg-neutral-800 border border-luxury-light-gray dark:border-neutral-700 focus:border-luxury-black dark:focus:border-white focus:outline-none text-xs tracking-wide transition-all duration-300 uppercase text-luxury-black dark:text-white"
             >
-              <option value="Cashmere Volume Custom Set">
-                Cashmere Volume Custom Set ($220)
+              <option value="Package 1">
+                Package 1 (₱499)
               </option>
-              <option value="Classic Silk Custom Set">
-                Classic Silk Custom Set ($160)
+              <option value="Package 2">
+                Package 2 (₱799)
               </option>
-              <option value="Couture Hybrid Set">Couture Hybrid Set ($190)</option>
-              <option value="Lash Lift & Tint">Lash Lift & Tint ($110)</option>
+              <option value="Package 3 (2 Heads)">
+                Package 3 (2 Heads) (₱1299)
+              </option>
             </select>
           </div>
 
@@ -197,7 +197,7 @@ export default function ManualBookingTab({ onBookingCreated }: ManualBookingTabP
           {/* Price */}
           <div className="space-y-2">
             <label className="block text-[10px] uppercase tracking-[0.2em] font-semibold text-neutral-400 dark:text-neutral-500">
-              Price ($) *
+              Price (₱) *
             </label>
             <input
               type="number"

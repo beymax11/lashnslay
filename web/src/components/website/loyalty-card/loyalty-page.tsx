@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import LoyaltyCard from "@/components/website/loyalty-card/loyalty-card";
@@ -14,7 +14,7 @@ export default function LoyaltyPage() {
       name: "Silver Essential",
       requirement: "Entry Level",
       benefits: [
-        "Earn 10 points for every $10 spent",
+        "Earn 10 points for every ₱10 spent",
         "Complimentary organic rosewater lash preps",
         "Anniversary treatment pricing offers",
       ],
@@ -23,7 +23,7 @@ export default function LoyaltyPage() {
       name: "Gold Elite",
       requirement: "Accumulate 500 Points",
       benefits: [
-        "Earn 12 points for every $10 spent",
+        "Earn 12 points for every ₱10 spent",
         "Priority reserve booking slot guarantees",
         "Complimentary protective sealant upgrades",
         "Milestone voucher claims (Free standard refills)",
@@ -33,7 +33,7 @@ export default function LoyaltyPage() {
       name: "Platinum Signature",
       requirement: "Accumulate 1,500 Points",
       benefits: [
-        "Earn 15 points for every $10 spent",
+        "Earn 15 points for every ₱10 spent",
         "24-hour concierge reserve chat access",
         "Free full-set couture treatment on birthday",
         "Early access to limited lash lash designs",
@@ -245,8 +245,8 @@ export default function LoyaltyPage() {
                                 {res.serviceName}
                               </h4>
                             </div>
-                            <span className="text-xs font-serif font-light text-neutral-800">
-                              ${res.price}
+                            <span className="text-sm font-serif font-bold text-luxury-black">
+                              ₱{res.price}
                             </span>
                           </div>
 

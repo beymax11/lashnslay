@@ -85,19 +85,18 @@ export default function LoginModal() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div 
+      <div
         onClick={closeLoginModal}
         className="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity duration-300 animate-fade-in"
       />
 
       {/* Modal Content */}
-      <div 
-        className={`relative bg-luxury-white border border-luxury-light-gray max-w-md w-full mx-4 shadow-2xl p-8 transition-all duration-300 z-10 ${
-          isAnimating ? "scale-95 opacity-50 translate-y-4" : "scale-100 opacity-100 translate-y-0"
-        }`}
+      <div
+        className={`relative bg-luxury-white border border-luxury-light-gray max-w-md w-full mx-4 shadow-2xl p-8 transition-all duration-300 z-10 ${isAnimating ? "scale-95 opacity-50 translate-y-4" : "scale-100 opacity-100 translate-y-0"
+          }`}
       >
         {/* Close Button */}
-        <button 
+        <button
           onClick={closeLoginModal}
           className="absolute top-6 right-6 text-luxury-black/40 hover:text-luxury-black transition-colors text-[10px] uppercase tracking-[0.2em] font-light cursor-pointer"
         >
@@ -131,23 +130,21 @@ export default function LoginModal() {
         <div className="flex border-b border-luxury-light-gray mb-8">
           <button
             onClick={() => setActiveTab("signin")}
-            className={`w-1/2 pb-3 text-xs uppercase tracking-[0.2em] font-light text-center transition-all ${
-              activeTab === "signin" 
-                ? "border-b border-luxury-black font-semibold text-luxury-black" 
-                : "text-luxury-black/40 hover:text-luxury-black/70"
-            }`}
+            className={`w-1/2 pb-3 text-xs uppercase tracking-[0.2em] font-light text-center transition-all ${activeTab === "signin"
+              ? "border-b border-luxury-black font-semibold text-luxury-black"
+              : "text-luxury-black/40 hover:text-luxury-black/70"
+              }`}
           >
             Sign In
           </button>
           <button
             onClick={() => setActiveTab("join")}
-            className={`w-1/2 pb-3 text-xs uppercase tracking-[0.2em] font-light text-center transition-all ${
-              activeTab === "join" 
-                ? "border-b border-luxury-black font-semibold text-luxury-black" 
-                : "text-luxury-black/40 hover:text-luxury-black/70"
-            }`}
+            className={`w-1/2 pb-3 text-xs uppercase tracking-[0.2em] font-light text-center transition-all ${activeTab === "join"
+              ? "border-b border-luxury-black font-semibold text-luxury-black"
+              : "text-luxury-black/40 hover:text-luxury-black/70"
+              }`}
           >
-            Join the Club
+            Sign up
           </button>
         </div>
 
@@ -189,7 +186,7 @@ export default function LoginModal() {
               type="submit"
               className="w-full bg-luxury-black text-luxury-white text-xs uppercase tracking-[0.25em] font-medium py-4 border border-luxury-black hover:bg-transparent hover:text-luxury-black transition-all duration-400 focus:outline-none cursor-pointer mt-2"
             >
-              Authenticate Profile
+              Sign in
             </button>
           </form>
         ) : (
@@ -254,7 +251,7 @@ export default function LoginModal() {
               type="submit"
               className="w-full bg-luxury-black text-luxury-white text-xs uppercase tracking-[0.25em] font-medium py-4 border border-luxury-black hover:bg-transparent hover:text-luxury-black transition-all duration-400 focus:outline-none cursor-pointer mt-3"
             >
-              Create Membership Card
+              Create a Account
             </button>
           </form>
         )}

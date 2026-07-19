@@ -54,11 +54,11 @@ const DEFAULT_USER: User = {
   reservations: [
     {
       id: "res-1",
-      serviceName: "Cashmere Volume Custom Set",
+      serviceName: "Package 2",
       stylistName: "Isabella Thorne",
       date: "2026-07-25",
       time: "2:30 PM",
-      price: 220,
+      price: 799,
       code: "RES-84920-2026",
     },
   ],

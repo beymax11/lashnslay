@@ -8,7 +8,7 @@ interface Service {
   id: string;
   name: string;
   price: number;
-  duration: string;
+  duration?: string;
   description: string;
 }
 
@@ -18,11 +18,39 @@ interface Stylist {
   role: string;
 }
 
+const services: Service[] = [
+  {
+    id: "package-1",
+    name: "Package 1",
+    price: 499,
+    description: "Eyelash Lift/Perm & Brow Lamination combo.",
+  },
+  {
+    id: "package-2",
+    name: "Package 2",
+    price: 799,
+    description: "Eyelash Extensions & Brow Lamination combo.",
+  },
+  {
+    id: "package-3",
+    name: "Package 3 (2 Heads)",
+    price: 1299,
+    description: "Eyelash Extensions & Brow Lamination combo for 2 Heads.",
+  },
+];
+
+const stylists: Stylist[] = [
+  { id: "isabella", name: "Isabella Thorne", role: "Master Lash Stylist" },
+  { id: "marcello", name: "Marcello Dupont", role: "Senior Lash Architect" },
+];
+
+const timeSlots = ["10:00 AM", "11:30 AM", "1:00 PM", "2:30 PM", "4:00 PM", "5:30 PM"];
+
 export default function ReservePage() {
   const { isLoggedIn, user, addReservation, openLoginModal } = useAuth();
   const [step, setStep] = useState(1);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
-  const [selectedStylist, setSelectedStylist] = useState<Stylist | null>(null);
+  const [selectedStylist, setSelectedStylist] = useState<Stylist | null>(stylists[0]);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [clientInfo, setClientInfo] = useState({
@@ -55,37 +83,6 @@ export default function ReservePage() {
       });
     }
   }, [user]);
-
-  const services: Service[] = [
-    {
-      id: "classic-silk",
-      name: "Classic Silk Eyelash Set",
-      price: 150,
-      duration: "90 Mins",
-      description: "Natural, single-lash application using lightweight premium silk fibres.",
-    },
-    {
-      id: "cashmere-volume",
-      name: "Cashmere Volume Custom Set",
-      price: 220,
-      duration: "120 Mins",
-      description: "Dense, multi-dimensional handmade cashmere fans styled for elegant volume.",
-    },
-    {
-      id: "couture-lift",
-      name: "Couture Lash Lift & Keratin",
-      price: 110,
-      duration: "60 Mins",
-      description: "Custom premium lash lift with keratin coating to nurture and curl natural lashes.",
-    },
-  ];
-
-  const stylists: Stylist[] = [
-    { id: "isabella", name: "Isabella Thorne", role: "Master Lash Stylist" },
-    { id: "marcello", name: "Marcello Dupont", role: "Senior Lash Architect" },
-  ];
-
-  const timeSlots = ["10:00 AM", "11:30 AM", "1:00 PM", "2:30 PM", "4:00 PM", "5:30 PM"];
 
   const today = new Date();
   const [viewYear, setViewYear] = useState(today.getFullYear());
@@ -154,7 +151,7 @@ export default function ReservePage() {
 
   const handleNext = () => {
     if (step === 1 && (!selectedDate || !selectedTime)) return;
-    if (step === 2 && (!selectedService || !selectedStylist)) return;
+    if (step === 2 && !selectedService) return;
     if (step === 3 && (!clientInfo.name || !clientInfo.email || !clientInfo.phone)) return;
     setStep(step + 1);
   };
@@ -187,7 +184,7 @@ export default function ReservePage() {
   const handleReset = () => {
     setStep(1);
     setSelectedService(null);
-    setSelectedStylist(null);
+    setSelectedStylist(stylists[0]);
     setSelectedDate("");
     setSelectedTime("");
     setClientInfo({
@@ -306,12 +303,12 @@ export default function ReservePage() {
                 {isVoucherApplied && (
                   <div className="flex justify-between text-neutral-500">
                     <span className="uppercase tracking-wider">Voucher Applied</span>
-                    <span>-{discountAmount > 0 ? `$${discountAmount}` : "Complimentary"}</span>
+                    <span>-{discountAmount > 0 ? `₱${discountAmount}` : "Complimentary"}</span>
                   </div>
                 )}
                 <div className="border-t border-neutral-200/80 pt-3 flex justify-between text-sm">
                   <span className="font-serif tracking-wide">Total Investment</span>
-                  <span className="font-semibold">${finalPrice}</span>
+                  <span className="font-bold text-base text-luxury-black">₱{finalPrice}</span>
                 </div>
               </div>
 
@@ -476,40 +473,14 @@ export default function ReservePage() {
                                 {svc.name}
                               </span>
                             </div>
-                            <span className="text-xs font-semibold tracking-wider">
-                              ${svc.price} / {svc.duration}
+                            <span className="text-sm font-bold text-luxury-black tracking-wider">
+                              ₱{svc.price}
                             </span>
                           </div>
                           <p className="text-[11px] font-light text-luxury-black/60 ml-7 mt-1 max-w-lg leading-relaxed">
                             {svc.description}
                           </p>
                         </label>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Select Artist */}
-                  <div>
-                    <p className="text-xs uppercase tracking-widest text-neutral-400 font-light mb-3">
-                      Select Master Lash Artist:
-                    </p>
-                    <div className="grid grid-cols-2 gap-3">
-                      {stylists.map((st) => (
-                        <button
-                          type="button"
-                          key={st.id}
-                          onClick={() => setSelectedStylist(st)}
-                          className={`p-4 border text-left transition-all duration-300 ${
-                            selectedStylist?.id === st.id
-                              ? "border-luxury-black bg-luxury-soft-white"
-                              : "border-luxury-light-gray bg-luxury-white hover:border-luxury-black"
-                          }`}
-                        >
-                          <p className="font-serif text-sm font-light tracking-wide">{st.name}</p>
-                          <p className="text-[10px] text-luxury-black/60 font-light tracking-wider mt-0.5">
-                            {st.role}
-                          </p>
-                        </button>
                       ))}
                     </div>
                   </div>
@@ -640,9 +611,8 @@ export default function ReservePage() {
                     <div className="border-b border-luxury-light-gray pb-3 flex justify-between">
                       <div>
                         <p className="font-serif text-sm tracking-wide">{selectedService?.name}</p>
-                        <p className="text-[10px] text-luxury-black/60 mt-0.5">{selectedService?.duration}</p>
                       </div>
-                      <span className="font-semibold text-sm">${selectedService?.price}</span>
+                      <span className="font-semibold text-sm">₱{selectedService?.price}</span>
                     </div>
 
                     <div className="space-y-2 border-b border-luxury-light-gray pb-3">
@@ -672,13 +642,13 @@ export default function ReservePage() {
                     {isVoucherApplied && (
                       <div className="flex justify-between text-luxury-black/70">
                         <span className="uppercase tracking-wider">Voucher applied ({clientInfo.memberCode.toUpperCase()})</span>
-                        <span>-${discountAmount}</span>
+                        <span>-₱{discountAmount}</span>
                       </div>
                     )}
 
                     <div className="flex justify-between text-sm pt-1">
                       <span className="font-serif tracking-wide font-medium">Estimated Investment</span>
-                      <span className="font-semibold text-base">${finalPrice}</span>
+                      <span className="font-bold text-lg text-luxury-black">₱{finalPrice}</span>
                     </div>
                   </div>
                 </div>
@@ -707,7 +677,7 @@ export default function ReservePage() {
                 onClick={handleNext}
                 disabled={
                   (step === 1 && (!selectedDate || !selectedTime)) ||
-                  (step === 2 && (!selectedService || !selectedStylist)) ||
+                  (step === 2 && !selectedService) ||
                   (step === 3 && (!clientInfo.name || !clientInfo.email || !clientInfo.phone))
                 }
                 className="text-xs uppercase tracking-[0.2em] px-8 py-3.5 bg-luxury-black text-luxury-white border border-luxury-black hover:bg-transparent hover:text-luxury-black transition-all duration-300 font-medium disabled:opacity-40 disabled:hover:bg-luxury-black disabled:hover:text-luxury-white disabled:cursor-not-allowed"
